@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, unlinkSync, writeFile } from 'fs'
-import { Client, ClientSession, Message } from 'whatsapp-web.js'
+import { Client, ClientOptions, ClientSession, Message } from 'whatsapp-web.js'
 import Logger from '@ioc:Adonis/Core/Logger'
 
 export enum WhatsApp {
@@ -14,13 +14,17 @@ export default class WhatsappsController {
   public isReady = false
 
   constructor() {
-    if (existsSync(WhatsApp.session)) {
-      this.sessionData = JSON.parse(readFileSync(WhatsApp.session, { encoding: 'utf-8' }))
+    const options: ClientOptions = {
+      puppeteer: {
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      },
     }
 
-    this.client = new Client({
-      session: this.sessionData,
-    })
+    if (existsSync(WhatsApp.session)) {
+      options.session = JSON.parse(readFileSync(WhatsApp.session, { encoding: 'utf-8' }))
+    }
+
+    this.client = new Client(options)
 
     this.client.on('authenticated', this.authenticated)
     this.client.on('auth_failure', this.authFailure)
