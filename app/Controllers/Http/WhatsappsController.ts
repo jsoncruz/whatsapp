@@ -82,7 +82,7 @@ export default class WhatsappsController {
           reject(false)
         })
       } else {
-        return false
+        reject(false)
       }
     })
   }
