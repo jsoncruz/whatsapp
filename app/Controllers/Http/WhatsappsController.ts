@@ -73,16 +73,25 @@ export default class WhatsappsController {
   }
 
   public test() {
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<{ message: string; code: number }>((resolve, reject) => {
       if (existsSync(WhatsApp.session)) {
         this.client.on('authenticated', () => {
-          resolve(true)
+          resolve({
+            message: 'O WhatsApp está autenticado',
+            code: 1,
+          })
         })
         this.client.on('auth_failure', () => {
-          reject(false)
+          reject({
+            message: 'A autenticação falhou',
+            code: 0,
+          })
         })
       } else {
-        reject(false)
+        reject({
+          message: 'Não existe uma sessão registrada',
+          code: 0,
+        })
       }
     })
   }
