@@ -71,4 +71,19 @@ export default class WhatsappsController {
   public async createSession() {
     return await this.generateQR()
   }
+
+  public test() {
+    return new Promise<boolean>((resolve, reject) => {
+      if (existsSync(WhatsApp.session)) {
+        this.client.on('authenticated', () => {
+          resolve(true)
+        })
+        this.client.on('auth_failure', () => {
+          reject(false)
+        })
+      } else {
+        return false
+      }
+    })
+  }
 }
